@@ -56,8 +56,9 @@
 		}
 	}
 
+	// browser-only check for mobile
 	function handleCallClick() {
-		if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
 			window.location.href = 'tel:+1234567890';
 		} else {
 			showCallToast = true;
@@ -167,9 +168,10 @@
 	<!-- Toast for desktop call -->
 	{#if showCallToast}
 		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
-			<div class="bg-[#2f4f4f] text-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
-				<p class="text-2xl font-bold mb-4 underline">Call All In One Today!</p>
-				<p class="text-3xl font-mono mb-6">+1 234-567-890</p>
+			<div class="bg-[#2f4f4f] text-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
+				<p class="text-3xl font-bold mb-4 underline">Call All In One Today!</p>
+				<p class="text-4xl font-mono mb-6">+1 234-567-890</p>
+				<p class="mb-6 text-lg">Click Close when you’re done.</p>
 				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showCallToast = false}>Close</button>
 			</div>
 		</div>
@@ -178,9 +180,9 @@
 	<!-- Toast for Gallery under construction -->
 	{#if showGalleryToast}
 		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
-			<div class="bg-[#2f4f4f] text-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
-				<p class="text-2xl font-semibold mb-6">Whoops! This page is under construction.</p>
-				<p class="mb-6">Please check back later for updates.</p>
+			<div class="bg-[#2f4f4f] text-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
+				<p class="text-3xl font-bold mb-4">Whoops! This page is under construction.</p>
+				<p class="mb-6 text-lg">Please check back later for updates.</p>
 				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showGalleryToast = false}>Close</button>
 			</div>
 		</div>

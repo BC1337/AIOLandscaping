@@ -43,14 +43,11 @@
 		}
 	];
 
-	// Toast state
 	let showToast = false;
 
-	// Detect if mobile
-	const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
-
+	// SSR-safe mobile check inside function
 	function handleCallClick() {
-		if (isMobile()) {
+		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
 			window.location.href = "tel:+1234567890";
 		} else {
 			showToast = true;
@@ -112,10 +109,10 @@
 	<!-- Toast -->
 	{#if showToast}
 		<div class="fixed inset-0 flex items-center justify-center z-50 bg-black/40">
-			<div class="bg-[#2f4f4f] text-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
-				<p class="text-xl mb-4"><span class="underline">Call All In One Today!</span></p>
-				<p class="font-mono text-lg">+1 234 567 890</p>
-				<button on:click={closeToast} class="mt-6 px-6 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-300 transition">
+			<div class="bg-[#2f4f4f] text-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
+				<p class="text-2xl font-bold mb-4 underline">Call All In One Today!</p>
+				<p class="text-3xl font-mono mb-6">+1 234 567 890</p>
+				<button on:click={closeToast} class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition">
 					Close
 				</button>
 			</div>
@@ -126,11 +123,18 @@
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
 		<p>&copy; {new Date().getFullYear()} All In One Landscaping. All rights reserved.</p>
 	</footer>
-
 </div>
 
 <style>
 	:global(.text-forest-green) {
 		color: #2f4f4f;
+	}
+
+	@keyframes fade-in {
+		from { opacity: 0; transform: scale(0.9); }
+		to { opacity: 1; transform: scale(1); }
+	}
+	.animate-fade-in {
+		animation: fade-in 0.2s ease-out;
 	}
 </style>
