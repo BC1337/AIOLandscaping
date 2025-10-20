@@ -1,8 +1,11 @@
-import vercel from '@sveltejs/adapter-vercel';
+import adapter from '@sveltejs/adapter-static';
 
-export default {
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
   kit: {
-    adapter: vercel(),
-    prerender: { default: true } // optional if you want static pre-rendering
+    adapter: adapter(),
+    prerender: true
   }
 };
+
+export default config;
