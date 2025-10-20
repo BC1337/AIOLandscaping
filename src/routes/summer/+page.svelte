@@ -3,7 +3,6 @@
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
 		{ name: 'Winter', href: '/winter' },
-		{ name: 'Gallery', href: '/gallery' }
 	];
 
 	const tiers = [
