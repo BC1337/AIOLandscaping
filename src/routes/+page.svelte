@@ -3,8 +3,8 @@
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
 		{ name: 'Winter', href: '/winter' },
-		{ name: 'Gallery', href: '/gallery' },
-		{ name: 'FAQ', href: '#faq' } // scrolls to FAQ section
+		{ name: 'Gallery', href: '/gallery', underConstruction: true },
+		{ name: 'FAQ', href: '#faq' }
 	];
 
 	const faqs = [
@@ -35,17 +35,23 @@
 	];
 
 	let openIndex = null;
-	let showToast = false;
+	let showCallToast = false;
+	let showGalleryToast = false;
 
 	function toggle(index) {
 		openIndex = openIndex === index ? null : index;
 	}
 
-	// smooth scroll fallback
-	function scrollToSection(event, href) {
-		if (href.startsWith('#')) {
+	function scrollToSection(event, link) {
+		if (link.underConstruction) {
 			event.preventDefault();
-			const el = document.querySelector(href);
+			showGalleryToast = true;
+			return;
+		}
+
+		if (link.href.startsWith('#')) {
+			event.preventDefault();
+			const el = document.querySelector(link.href);
 			if (el) el.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
@@ -54,7 +60,7 @@
 		if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
 			window.location.href = 'tel:+1234567890';
 		} else {
-			showToast = true;
+			showCallToast = true;
 		}
 	}
 </script>
@@ -70,7 +76,7 @@
 					<li>
 						<a 
 							href={link.href} 
-							on:click={(e) => scrollToSection(e, link.href)}
+							on:click={(e) => scrollToSection(e, link)}
 							class="hover:text-yellow-400 transition-colors duration-200"
 						>
 							{link.name}
@@ -105,7 +111,6 @@
 	<section class="max-w-6xl mx-auto py-16 px-6 text-center">
 		<h3 class="text-3xl font-bold mb-10">Our Core Services</h3>
 		<div class="grid md:grid-cols-2 gap-10">
-			<!-- Lawn Mowing -->
 			<a href="/summer" class="group bg-white rounded-2xl shadow-lg overflow-hidden transform transition hover:-translate-y-1 hover:shadow-2xl">
 				<img src="https://images.unsplash.com/photo-1668120089662-42642838cfef?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1470" alt="Lawn mowing" class="w-full h-56 object-cover group-hover:brightness-110 transition"/>
 				<div class="p-6">
@@ -115,7 +120,6 @@
 				</div>
 			</a>
 
-			<!-- Snow Clearing -->
 			<a href="/winter" class="group bg-white rounded-2xl shadow-lg overflow-hidden transform transition hover:-translate-y-1 hover:shadow-2xl">
 				<img src="https://images.unsplash.com/photo-1563611858739-f5018591533f?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=735" alt="Snow clearing" class="w-full h-56 object-cover group-hover:brightness-110 transition"/>
 				<div class="p-6">
@@ -161,12 +165,23 @@
 	</section>
 
 	<!-- Toast for desktop call -->
-	{#if showToast}
-		<div class="fixed inset-0 flex items-center justify-center z-50">
-			<div class="bg-[#2f4f4f] text-white p-6 rounded-lg shadow-lg text-center">
-				<p class="mb-2"><u>Call All In One Today!</u></p>
-				<p class="font-mono">+1 234-567-890</p>
-				<button class="mt-4 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold" on:click={() => showToast = false}>Close</button>
+	{#if showCallToast}
+		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
+			<div class="bg-[#2f4f4f] text-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
+				<p class="text-2xl font-bold mb-4 underline">Call All In One Today!</p>
+				<p class="text-3xl font-mono mb-6">+1 234-567-890</p>
+				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showCallToast = false}>Close</button>
+			</div>
+		</div>
+	{/if}
+
+	<!-- Toast for Gallery under construction -->
+	{#if showGalleryToast}
+		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
+			<div class="bg-[#2f4f4f] text-white p-10 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
+				<p class="text-2xl font-semibold mb-6">Whoops! This page is under construction.</p>
+				<p class="mb-6">Please check back later for updates.</p>
+				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showGalleryToast = false}>Close</button>
 			</div>
 		</div>
 	{/if}
@@ -184,5 +199,13 @@
 	}
 	:global(html) {
 		scroll-behavior: smooth;
+	}
+
+	@keyframes fade-in {
+		from { opacity: 0; transform: scale(0.9); }
+		to { opacity: 1; transform: scale(1); }
+	}
+	.animate-fade-in {
+		animation: fade-in 0.2s ease-out;
 	}
 </style>
