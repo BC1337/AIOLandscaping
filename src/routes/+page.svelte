@@ -3,8 +3,8 @@
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
 		{ name: 'Winter', href: '/winter' },
-		{ name: 'Gallery', href: '#', action: 'gallery' },
-		{ name: 'FAQ', href: '#faq' }
+		{ name: 'Gallery', href: '/gallery' },
+		{ name: 'FAQ', href: '#faq' } // scrolls to FAQ section
 	];
 
 	const faqs = [
@@ -13,13 +13,13 @@
 			answer: "Yes! Depending on the snowfall, we aim to clear driveways and sidewalks within 24 hours."
 		},
 		{
-	        question: "Can I schedule recurring lawn mowing?",
-	        answer: "Yes! We offer recurring lawn care packages to keep your yard healthy and tidy all season, including weekly, bi-weekly, or adaptive schedules that adjust as the grass grows. We also offer one-time services or ongoing contracts depending on your needs. Our goal is to make sure your lawn looks its best, and we stand behind our work — if something is missed or you’re not satisfied, we’ll come back at no charge."
-        },
-        {
-	        question: "Can I schedule recurring snow clearing?",
-	        answer: "Yes! We provide recurring snow clearing services, with options for standard, premium, or express coverage throughout the winter season. One-time clearing services or ongoing contracts are also available depending on your needs. We prioritize reliable, fast service — if a spot is missed or you aren’t happy, we’ll return at no charge."
-        },
+			question: "Can I schedule recurring lawn mowing?",
+			answer: "Yes! We offer recurring lawn care packages to keep your yard healthy and tidy all season, including weekly, bi-weekly, or adaptive schedules that adjust as the grass grows. We also offer one-time services or ongoing contracts depending on your needs. Our goal is to make sure your lawn looks its best, and we stand behind our work — if something is missed or you’re not satisfied, we’ll come back at no charge."
+		},
+		{
+			question: "Can I schedule recurring snow clearing?",
+			answer: "Yes! We provide recurring snow clearing services, with options for standard, premium, or express coverage throughout the winter season. One-time clearing services or ongoing contracts are also available depending on your needs. We prioritize reliable, fast service — if a spot is missed or you aren’t happy, we’ll return at no charge."
+		},
 		{
 			question: "Do you provide equipment or do I need to supply it?",
 			answer: "We bring all necessary equipment for lawn care and snow clearing; no need to supply anything."
@@ -35,33 +35,27 @@
 	];
 
 	let openIndex = null;
-	let showCallToast = false;
-	let showGalleryToast = false;
+	let showToast = false;
 
 	function toggle(index) {
 		openIndex = openIndex === index ? null : index;
 	}
 
-	function handleCall() {
-		if (/Mobi|Android/i.test(navigator.userAgent)) {
-			// Mobile devices just trigger tel link
-			window.location.href = "tel:+1234567890";
-		} else {
-			// Desktop shows toast
-			showCallToast = true;
+	// smooth scroll fallback
+	function scrollToSection(event, href) {
+		if (href.startsWith('#')) {
+			event.preventDefault();
+			const el = document.querySelector(href);
+			if (el) el.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
-	function closeCallToast() {
-		showCallToast = false;
-	}
-
-	function handleGalleryClick() {
-		showGalleryToast = true;
-	}
-
-	function closeGalleryToast() {
-		showGalleryToast = false;
+	function handleCallClick() {
+		if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+			window.location.href = 'tel:+1234567890';
+		} else {
+			showToast = true;
+		}
 	}
 </script>
 
@@ -74,15 +68,13 @@
 			<ul class="flex space-x-6">
 				{#each navLinks as link}
 					<li>
-						{#if link.action === 'gallery'}
-							<a href="#" on:click|preventDefault={handleGalleryClick} class="hover:text-yellow-400 transition-colors duration-200">
-								{link.name}
-							</a>
-						{:else}
-							<a href={link.href} class="hover:text-yellow-400 transition-colors duration-200">
-								{link.name}
-							</a>
-						{/if}
+						<a 
+							href={link.href} 
+							on:click={(e) => scrollToSection(e, link.href)}
+							class="hover:text-yellow-400 transition-colors duration-200"
+						>
+							{link.name}
+						</a>
 					</li>
 				{/each}
 			</ul>
@@ -100,7 +92,10 @@
 			<p class="text-lg md:text-xl mb-6">
 				Professional lawn mowing and snow clearing for every season.
 			</p>
-			<button on:click={handleCall} class="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg hover:bg-yellow-300 transition">
+			<button
+				on:click={handleCallClick}
+				class="bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg hover:bg-yellow-300 transition"
+			>
 				Call Now
 			</button>
 		</div>
@@ -165,32 +160,22 @@
 		</div>
 	</section>
 
+	<!-- Toast for desktop call -->
+	{#if showToast}
+		<div class="fixed inset-0 flex items-center justify-center z-50">
+			<div class="bg-[#2f4f4f] text-white p-6 rounded-lg shadow-lg text-center">
+				<p class="mb-2"><u>Call All In One Today!</u></p>
+				<p class="font-mono">+1 234-567-890</p>
+				<button class="mt-4 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold" on:click={() => showToast = false}>Close</button>
+			</div>
+		</div>
+	{/if}
+
 	<!-- Footer -->
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
 		<p>&copy; {new Date().getFullYear()} All In One Landscaping. All rights reserved.</p>
 	</footer>
 
-	<!-- Call Toast -->
-	{#if showCallToast}
-		<div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-			<div class="bg-[#2f4f4f] text-white px-8 py-6 rounded-lg shadow-lg text-center max-w-sm w-full relative">
-				<h3 class="text-xl font-bold mb-2 underline">Call All In One Today!</h3>
-				<p class="text-lg">Phone: <span class="font-semibold">+1 (234) 567-890</span></p>
-				<button on:click={closeCallToast} class="absolute top-2 right-2 text-white font-bold hover:text-gray-200">×</button>
-			</div>
-		</div>
-	{/if}
-
-	<!-- Gallery Toast -->
-	{#if showGalleryToast}
-		<div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-			<div class="bg-[#2f4f4f] text-white px-8 py-6 rounded-lg shadow-lg text-center max-w-sm w-full relative">
-				<h3 class="text-xl font-bold mb-2 underline">Gallery Coming Soon!</h3>
-				<p class="text-lg">Oops! This content is under maintenance. Please check back for future updates.</p>
-				<button on:click={closeGalleryToast} class="absolute top-2 right-2 text-white font-bold hover:text-gray-200">×</button>
-			</div>
-		</div>
-	{/if}
 </div>
 
 <style>
