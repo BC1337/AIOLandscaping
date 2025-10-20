@@ -1,11 +1,13 @@
 import adapter from '@sveltejs/adapter-static';
 
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
+export default {
   kit: {
-    adapter: adapter(),
-    prerender: true
+    adapter: adapter({
+      fallback: 'index.html', // SPA fallback
+      strict: false           // ignore missing prerendered pages
+    }),
+    prerender: {
+      entries: ['*']          // prerender all reachable pages
+    }
   }
 };
-
-export default config;
