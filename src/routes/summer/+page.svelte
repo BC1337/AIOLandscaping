@@ -1,6 +1,4 @@
 <script>
-	import { onMount } from 'svelte';
-
 	// Navbar links
 	const navLinks = [
 		{ name: 'Home', href: '/' },
@@ -48,18 +46,13 @@
 		}
 	];
 
-	// SSR-safe state
 	let showToast = false;
-	let isMobile = false;
 	const currentYear = new Date().getFullYear();
 
-	// Detect mobile after mount
-	onMount(() => {
-		isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-	});
-
+	// SSR-safe: check mobile inside the function
 	function handleCallClick() {
-		if (isMobile) {
+		const isMobile = typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+		if (isMobile && typeof window !== 'undefined') {
 			window.location.href = "tel:+1234567890";
 		} else {
 			showToast = true;

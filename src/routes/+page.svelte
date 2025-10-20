@@ -39,13 +39,7 @@
 	let openIndex = null;
 	let showCallToast = false;
 	let showGalleryToast = false;
-	let isMobile = false;
 	const currentYear = new Date().getFullYear();
-
-	// Run only on client
-	onMount(() => {
-		isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-	});
 
 	function toggle(index) {
 		openIndex = openIndex === index ? null : index;
@@ -66,7 +60,7 @@
 	}
 
 	function handleCallClick() {
-		if (isMobile && typeof window !== 'undefined') {
+		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) && typeof window !== 'undefined') {
 			window.location.href = 'tel:+1234567890';
 		} else {
 			showCallToast = true;
@@ -181,7 +175,7 @@
 		</div>
 	</section>
 
-	<!-- Toast for desktop call -->
+	<!-- Toasts -->
 	{#if showCallToast}
 		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
 			<div class="bg-[#2f4f4f] text-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
@@ -193,7 +187,6 @@
 		</div>
 	{/if}
 
-	<!-- Toast for Gallery under construction -->
 	{#if showGalleryToast}
 		<div class="fixed inset-0 flex items-center justify-center z-50 px-4">
 			<div class="bg-[#2f4f4f] text-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
