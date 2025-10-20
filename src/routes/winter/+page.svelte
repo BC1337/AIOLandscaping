@@ -1,10 +1,14 @@
 <script>
+	import { onMount } from 'svelte';
+
+	// Navbar links
 	const navLinks = [
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
-		{ name: 'Winter', href: '/winter' },
+		{ name: 'Winter', href: '/winter' }
 	];
 
+	// Winter service tiers
 	const tiers = [
 		{
 			name: "Standard",
@@ -43,11 +47,18 @@
 		}
 	];
 
+	// SSR-safe state
 	let showToast = false;
+	let isMobile = false;
+	const currentYear = new Date().getFullYear();
 
-	// SSR-safe mobile check inside function
+	// Detect mobile after mount
+	onMount(() => {
+		isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+	});
+
 	function handleCallClick() {
-		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+		if (isMobile) {
 			window.location.href = "tel:+1234567890";
 		} else {
 			showToast = true;
@@ -121,7 +132,7 @@
 
 	<!-- Footer -->
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
-		<p>&copy; {new Date().getFullYear()} All In One Landscaping. All rights reserved.</p>
+		<p>&copy; {currentYear} All In One Landscaping. All rights reserved.</p>
 	</footer>
 </div>
 

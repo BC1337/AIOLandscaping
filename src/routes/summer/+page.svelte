@@ -1,10 +1,14 @@
 <script>
+	import { onMount } from 'svelte';
+
+	// Navbar links
 	const navLinks = [
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
-		{ name: 'Winter', href: '/winter' },
+		{ name: 'Winter', href: '/winter' }
 	];
 
+	// Summer lawn care tiers
 	const tiers = [
 		{
 			name: "Weekly",
@@ -44,11 +48,18 @@
 		}
 	];
 
+	// SSR-safe state
 	let showToast = false;
+	let isMobile = false;
+	const currentYear = new Date().getFullYear();
 
-	// Detect if mobile inside a function — SSR-safe
+	// Detect mobile after mount
+	onMount(() => {
+		isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+	});
+
 	function handleCallClick() {
-		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+		if (isMobile) {
 			window.location.href = "tel:+1234567890";
 		} else {
 			showToast = true;
@@ -86,7 +97,7 @@
 		<div class="flex flex-col md:flex-row gap-6 justify-center items-stretch">
 			{#each tiers as tier}
 				<div class={`flex-1 rounded-2xl p-8 shadow-lg transform transition hover:-translate-y-2
-                    ${tier.popular ? 'bg-yellow-50 scale-105 shadow-2xl border-2 border-yellow-400' : 'bg-white'}`}>
+					${tier.popular ? 'bg-yellow-50 scale-105 shadow-2xl border-2 border-yellow-400' : 'bg-white'}`}>
 					
 					<h3 class="text-2xl font-bold mb-2">{tier.name}</h3>
 					<p class="text-gray-600 mb-4 italic">{tier.tagline}</p>
@@ -122,7 +133,7 @@
 
 	<!-- Footer -->
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
-		<p>&copy; {new Date().getFullYear()} All In One Landscaping. All rights reserved.</p>
+		<p>&copy; {currentYear} All In One Landscaping. All rights reserved.</p>
 	</footer>
 </div>
 

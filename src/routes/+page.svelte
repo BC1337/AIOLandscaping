@@ -1,4 +1,6 @@
 <script>
+	import { onMount } from 'svelte';
+
 	const navLinks = [
 		{ name: 'Home', href: '/' },
 		{ name: 'Summer', href: '/summer' },
@@ -37,6 +39,13 @@
 	let openIndex = null;
 	let showCallToast = false;
 	let showGalleryToast = false;
+	let isMobile = false;
+	const currentYear = new Date().getFullYear();
+
+	// Run only on client
+	onMount(() => {
+		isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+	});
 
 	function toggle(index) {
 		openIndex = openIndex === index ? null : index;
@@ -49,20 +58,27 @@
 			return;
 		}
 
-		if (link.href.startsWith('#')) {
+		if (link.href.startsWith('#') && typeof document !== 'undefined') {
 			event.preventDefault();
 			const el = document.querySelector(link.href);
 			if (el) el.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
-	// browser-only check for mobile
 	function handleCallClick() {
-		if (typeof navigator !== 'undefined' && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+		if (isMobile && typeof window !== 'undefined') {
 			window.location.href = 'tel:+1234567890';
 		} else {
 			showCallToast = true;
 		}
+	}
+
+	function closeCallToast() {
+		showCallToast = false;
+	}
+
+	function closeGalleryToast() {
+		showGalleryToast = false;
 	}
 </script>
 
@@ -172,7 +188,7 @@
 				<p class="text-3xl font-bold mb-4 underline">Call All In One Today!</p>
 				<p class="text-4xl font-mono mb-6">+1 234-567-890</p>
 				<p class="mb-6 text-lg">Click Close when you’re done.</p>
-				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showCallToast = false}>Close</button>
+				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={closeCallToast}>Close</button>
 			</div>
 		</div>
 	{/if}
@@ -183,14 +199,14 @@
 			<div class="bg-[#2f4f4f] text-white p-12 rounded-3xl shadow-2xl text-center max-w-md w-full transform scale-100 animate-fade-in">
 				<p class="text-3xl font-bold mb-4">Whoops! This page is under construction.</p>
 				<p class="mb-6 text-lg">Please check back later for updates.</p>
-				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={() => showGalleryToast = false}>Close</button>
+				<button class="px-6 py-3 bg-yellow-400 text-black rounded-xl font-semibold text-lg hover:bg-yellow-300 transition" on:click={closeGalleryToast}>Close</button>
 			</div>
 		</div>
 	{/if}
 
 	<!-- Footer -->
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
-		<p>&copy; {new Date().getFullYear()} All In One Landscaping. All rights reserved.</p>
+		<p>&copy; {currentYear} All In One Landscaping. All rights reserved.</p>
 	</footer>
 
 </div>
