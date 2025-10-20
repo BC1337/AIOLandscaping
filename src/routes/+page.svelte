@@ -90,7 +90,7 @@
 		<div class="relative z-10 text-white px-4">
 			<h2 class="text-4xl md:text-6xl font-bold mb-4">Transform Your Outdoor Space</h2>
 			<p class="text-lg md:text-xl mb-6">
-				Professional lawn mowing and snow clearing for every season.
+				Professional lawn care and snow clearing for every season.
 			</p>
 			<button
 				on:click={handleCallClick}
