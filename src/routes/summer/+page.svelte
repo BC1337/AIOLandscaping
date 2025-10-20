@@ -44,9 +44,29 @@
 			popular: false
 		}
 	];
+
+	// Toast state
+	let showToast = false;
+
+	// Detect if desktop (simple approach)
+	const isMobile = () => /Mobi|Android/i.test(navigator.userAgent);
+
+	function handleCallClick() {
+		if (isMobile()) {
+			// On mobile, just call
+			window.location.href = "tel:+1234567890";
+		} else {
+			// On desktop, show toast
+			showToast = true;
+		}
+	}
+
+	function closeToast() {
+		showToast = false;
+	}
 </script>
 
-<div class="min-h-screen bg-[#f5f2eb] text-gray-900 font-sans">
+<div class="min-h-screen bg-[#f5f2eb] text-gray-900 font-sans relative">
 
 	<!-- Navbar -->
 	<nav class="bg-[#2f4f4f]/95 backdrop-blur-sm text-white sticky top-0 z-50 shadow-md">
@@ -70,7 +90,6 @@
 		</p>
 
 		<div class="flex flex-col md:flex-row gap-6 justify-center items-stretch">
-
 			{#each tiers as tier}
 				<div class={`flex-1 rounded-2xl p-8 shadow-lg transform transition hover:-translate-y-2
                     ${tier.popular ? 'bg-yellow-50 scale-105 shadow-2xl border-2 border-yellow-400' : 'bg-white'}`}>
@@ -83,14 +102,29 @@
 							<li>{line}</li>
 						{/each}
 					</ul>
-					<a href="tel:+1234567890" class="block bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg hover:bg-yellow-300 text-center transition">
+					<button 
+						on:click={handleCallClick}
+						class="w-full bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg hover:bg-yellow-300 text-center transition"
+					>
 						Call Now
-					</a>
+					</button>
 				</div>
 			{/each}
-
 		</div>
 	</section>
+
+	<!-- Toast -->
+	{#if showToast}
+		<div class="fixed inset-0 flex items-center justify-center z-50 bg-black/40">
+			<div class="bg-[#2f4f4f] text-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center">
+				<p class="text-xl mb-4"><span class="underline">Call All In One Today!</span></p>
+				<p class="font-mono text-lg">+1 234 567 890</p>
+				<button on:click={closeToast} class="mt-6 px-6 py-2 bg-yellow-400 text-black rounded-lg hover:bg-yellow-300 transition">
+					Close
+				</button>
+			</div>
+		</div>
+	{/if}
 
 	<!-- Footer -->
 	<footer class="bg-[#2f4f4f] text-gray-300 py-8 text-center">
@@ -98,3 +132,9 @@
 	</footer>
 
 </div>
+
+<style>
+	:global(.text-forest-green) {
+		color: #2f4f4f;
+	}
+</style>
